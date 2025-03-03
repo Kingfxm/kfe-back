@@ -6,31 +6,36 @@ const { Pool } = require("pg");
 const app = express();
 
 const pool = new Pool({
-    connectionString: process.env.DATABASE_URL, 
-    ssl: process.env.DATABASE_URL.includes("localhost") ? false : { rejectUnauthorized: false }
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.DATABASE_URL.includes("localhost")
+    ? false
+    : { rejectUnauthorized: false },
 });
 
 // Verificar conexión
-pool.connect()
-    .then(() => console.log("📦 Conectado a PostgreSQL"))
-    .catch((err) => console.error("❌ Error al conectar con PostgreSQL:", err));
+pool
+  .connect()
+  .then(() => console.log("📦 Conectado a PostgreSQL"))
+  .catch((err) => console.error("❌ Error al conectar con PostgreSQL:", err));
 
 const allowedOrigins = [
-    "https://el-kfe.netlify.app",
-    "http://localhost:3000"
+  "https://beamish-blancmange-25bd60.netlify.app",
+  "http://localhost:3000",
 ];
 
-app.use(cors({
+app.use(
+  cors({
     origin: (origin, callback) => {
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error("CORS not allowed"));
-        }
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("CORS not allowed"));
+      }
     },
     methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"]
-}));
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
 app.use(express.json());
 
